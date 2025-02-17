@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'; 
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,17 +22,33 @@ export default {
         iconUrl: "https://membro.pro/assets/icon.ico",
         loadingGif: path.resolve(__dirname, "src/assets/loader.gif"),
         shortcutName: "MembroPro",
-        createDesktopShortcut: true, // 🔹 Criar atalho na área de trabalho
-        createStartMenuShortcut: true, // 🔹 Criar atalho no menu iniciar
-        allowToChangeInstallationDirectory: true, // 🔹 Permitir que o usuário escolha a pasta de instalação
-        oneClick: false, // 🔹 Instalador interativo (permite ver as opções)
-        runAfterFinish: true, // 🔹 Abre o app após a instalação
-        requestExecutionLevel: "admin" // 🔹 **Força execução como Administrador**
+        createDesktopShortcut: true,
+        createStartMenuShortcut: true,
+        allowToChangeInstallationDirectory: true,
+        oneClick: false,
+        runAfterFinish: true,
+        requestExecutionLevel: "admin"
       }
     },
     {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin']
+      name: '@electron-forge/maker-dmg', // 🔹 Gera DMG no macOS
+      platforms: ['darwin'],
+      config: {
+        format: 'ULFO',
+        background: path.resolve(__dirname, "src/assets/dmg-background.png"), // (Opcional) Fundo do instalador DMG
+        icon: path.resolve(__dirname, "src/assets/icon.icns"),
+        overwrite: true
+      }
+    },
+    {
+      name: '@electron-forge/maker-appimage', // 🔹 Gera AppImage no Linux
+      platforms: ['linux'],
+      config: {
+        options: {
+          icon: path.resolve(__dirname, "src/assets/icon.png"),
+          categories: ["Utility"]
+        }
+      }
     },
     {
       name: '@electron-forge/maker-deb',

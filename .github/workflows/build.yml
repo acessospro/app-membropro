@@ -32,4 +32,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.os }}
-          path: out/
+          path: |
+            out/make/**/*.dmg
+            out/make/**/*.exe
+            out/make/**/*.AppImage
+            out/make/**/*.deb
+            out/make/**/*.rpm
