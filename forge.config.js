@@ -41,16 +41,6 @@ export default {
       }
     },
     {
-      name: '@electron-forge/maker-appimage', // 🔹 Gera AppImage no Linux
-      platforms: ['linux'],
-      config: {
-        options: {
-          icon: path.resolve(__dirname, "src/assets/icon.png"),
-          categories: ["Utility"]
-        }
-      }
-    },
-    {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
