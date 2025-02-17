@@ -8,8 +8,6 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import os from 'os';
 import { exec } from 'child_process';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,10 +17,6 @@ const DASHBOARD_URL = "https://membro.pro/page/dashboard";
 const APP_NAME = "MembroPro";
 
 let mainWindow;
-
-// 🔹 Configuração do autoUpdater
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
 
 // 🔹 Cria a janela do Electron
 app.whenReady().then(() => {
@@ -81,14 +75,6 @@ app.whenReady().then(() => {
     ]);
     Menu.setApplicationMenu(menu);
 
-    // 🔹 Verifica atualizações automáticas
-    autoUpdater.checkForUpdatesAndNotify();
-    
-    // 🔹 Verifica atualizações a cada 10 minutos
-    setInterval(() => {
-        autoUpdater.checkForUpdatesAndNotify();
-    }, 10 * 60 * 1000);
-
     // 🔹 Cria o atalho no desktop automaticamente
     createDesktopShortcut();
 });
@@ -131,20 +117,6 @@ agentApp.get('/status', (_req, res) => {
 const PORT = 8888;
 agentApp.listen(PORT, () => {
     console.log(`✅ Agente rodando em http://localhost:${PORT}`);
-});
-
-// 🔹 Eventos do AutoUpdater
-autoUpdater.on('update-available', () => {
-    log.info('⚡ Nova atualização disponível.');
-});
-
-autoUpdater.on('update-downloaded', () => {
-    log.info('✔ Atualização baixada, será instalada após reiniciar.');
-    autoUpdater.quitAndInstall();
-});
-
-autoUpdater.on('error', (error) => {
-    log.error(`Erro ao buscar atualizações: ${error}`);
 });
 
 // 🔹 Fecha o app corretamente
