@@ -35,6 +35,7 @@ jobs:
           path: |
             out/make/**/*.dmg
             out/make/**/*.exe
-            out/make/**/*.AppImage
             out/make/**/*.deb
             out/make/**/*.rpm
+permissions:
+  contents: write

@@ -10,6 +10,8 @@ import os from 'os';
 import { exec } from 'child_process';
 import { autoUpdater } from 'electron-updater';
 
+const { updateElectronApp } = require('update-electron-app');
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,6 +37,13 @@ app.whenReady().then(() => {
 
     // 🔹 Verificar atualizações automaticamente
     autoUpdater.checkForUpdatesAndNotify();
+
+    // Ativa as atualizações automáticas
+updateElectronApp({
+    repo: 'acessospro/app-membropro', // Substitua pelo repositório correto
+    updateInterval: '1 hour', // Verifica atualizações a cada 1 hora
+    logger: console, // Exibe logs no console
+  });
 
     configurarFirewall();
     criarMenuSuperior();

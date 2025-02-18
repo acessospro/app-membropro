@@ -60,15 +60,6 @@ export default {
         }
       }
     },
-  {
-    name: '@electron-forge/maker-appimage',
-    config: {
-      options: {
-        arch: "x64",
-        icon: path.resolve(__dirname, "src/assets/icon.png")
-      }
-    }
-  }
 ],  
   publishers: [
     {
