@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, shell, session, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, shell, session } from 'electron';
 import GoLogin from 'gologin';
 import puppeteer from 'puppeteer-core';
 import express from 'express';
@@ -8,9 +8,8 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import os from 'os';
 import { exec } from 'child_process';
-import { autoUpdater } from 'electron-updater';
 
-const { updateElectronApp } = require('update-electron-app');
+const { updateElectronApp } = ('update-electron-app');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +17,7 @@ const __dirname = path.dirname(__filename);
 const GOLOGIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzkyZTI5YjU0MzUzZTY1NGQ0ODg1ZDIiLCJ0eXBlIjoiZGV2Iiwiand0aWQiOiI2N2IwMjYxODljZTQzNzIzNGY4YmMzMGYifQ.whj_4HL_bJiR4TrzWrJfOOcCoHrMcjQRMGcgZUMSTyE";
 const DASHBOARD_URL = "https://membro.pro/page/dashboard";
 const APP_NAME = "MembroPro";
+const desktopPath = path.join(os.homedir(), "Desktop");
 const PORT = 8888;
 let mainWindow;
 
@@ -35,9 +35,6 @@ app.whenReady().then(() => {
 
     mainWindow.loadURL(DASHBOARD_URL);
 
-    // 🔹 Verificar atualizações automaticamente
-    autoUpdater.checkForUpdatesAndNotify();
-
     // Ativa as atualizações automáticas
 updateElectronApp({
     repo: 'acessospro/app-membropro', // Substitua pelo repositório correto
@@ -50,19 +47,18 @@ updateElectronApp({
     createDesktopShortcut();
 });
 
-// 🔹 Criar Menu Superior
-function criarMenuSuperior() {
-    const menuTemplate = [
-        { label: 'Atualizar', accelerator: 'F5', click: () => mainWindow.reload() },
-        { label: 'Reiniciar', accelerator: 'CmdOrCtrl+R', click: () => app.relaunch() || app.exit() },
-        { label: 'Limpar Cache', click: limparCache },
-        { label: 'Suporte', click: () => shell.openExternal('https://wa.me/message/GZXMOEPJE7EGC1') },
-        { label: 'Sair', accelerator: 'CmdOrCtrl+Q', click: () => app.quit() }
-    ];
+// 🔹 Menu personalizado em linha (horizontal)
+const menuTemplate = [
+    { label: 'Atualizar', accelerator: 'F5', click: () => mainWindow.reload() },
+    { label: 'Reiniciar', accelerator: 'CmdOrCtrl+R', click: () => app.relaunch() || app.exit() },
+    { label: 'Limpar Cache', click: limparCache },
+    { label: 'Suporte', click: () => shell.openExternal('https://wa.me/message/GZXMOEPJE7EGC1') },
+    { label: 'Sair', accelerator: 'CmdOrCtrl+Q', click: () => app.quit() }
+];
 
-    const menu = Menu.buildFromTemplate(menuTemplate);
-    Menu.setApplicationMenu(menu);
-}
+const menu = Menu.buildFromTemplate(menuTemplate);
+Menu.setApplicationMenu(menu);
+
 
 // 🔹 Limpar Cache
 async function limparCache() {
@@ -123,25 +119,72 @@ function monitorarFechamentoOrbita(goLogin, profileId) {
     }, 5000);
 }
 
-// 🔹 Criar Atalhos no Desktop
+// 🔹 Função para criar atalhos na área de trabalho
 function createDesktopShortcut() {
-    const desktopPath = path.join(os.homedir(), "Desktop");
+    if (process.platform === 'win32') {
+        createWindowsShortcut();
+    } else if (process.platform === 'darwin') {
+        createMacShortcut();
+    } else if (process.platform === 'linux') {
+        createLinuxShortcut();
+    }
+}
+
+// 🔹 Criar atalho no Windows (corrigido)
+function createWindowsShortcut() {
+    const shortcutPath = path.join(desktopPath, `${APP_NAME}.lnk`);
+    
+    if (!fs.existsSync(shortcutPath)) {
+        exec(`powershell.exe -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut('${shortcutPath}');$s.TargetPath='${process.execPath}';$s.Save()"`,
+        (error) => {
+            if (error) console.error("[ERRO] Falha ao criar atalho no Windows:", error);
+            else console.log("[SUCESSO] Atalho criado no Windows.");
+        });
+    } else {
+        console.log("[INFO] O atalho já existe no Windows.");
+    }
+}
+
+// 🔹 Criar atalho no macOS (corrigido)
+function createMacShortcut() {
+    const applicationsPath = "/Applications";
+    const shortcutPath = path.join(applicationsPath, `${APP_NAME}.app`);
+
+    if (!fs.existsSync(shortcutPath)) {
+        exec(`ln -s "${process.execPath}" "${shortcutPath}"`, (error) => {
+            if (error) console.error("[ERRO] Falha ao criar atalho no macOS:", error);
+            else console.log("[SUCESSO] Atalho criado no macOS.");
+        });
+    } else {
+        console.log("[INFO] O atalho já existe no macOS.");
+    }
+}
+
+// 🔹 Criar atalho no Linux (corrigido)
+function createLinuxShortcut() {
     const shortcutPath = path.join(desktopPath, `${APP_NAME}.desktop`);
 
-    if (process.platform === 'linux') {
-        if (!fs.existsSync(shortcutPath)) {
-            const shortcutContent = `[Desktop Entry]
+    if (!fs.existsSync(shortcutPath)) {
+        const shortcutContent = `[Desktop Entry]
 Type=Application
 Name=${APP_NAME}
 Exec=${process.execPath}
 Icon=${path.join(__dirname, "src/assets/icon.png")}
 Terminal=false`;
 
-            fs.writeFileSync(shortcutPath, shortcutContent, { mode: 0o755 });
-            console.log("[SUCESSO] Atalho criado no Linux.");
-        }
+        fs.writeFile(shortcutPath, shortcutContent, { mode: 0o755 }, (error) => {
+            if (error) console.error("[ERRO] Falha ao criar atalho no Linux:", error);
+            else console.log("[SUCESSO] Atalho criado no Linux.");
+        });
+    } else {
+        console.log("[INFO] O atalho já existe no Linux.");
     }
 }
+
+// 🔹 Criar atalho após o app estar pronto
+app.whenReady().then(() => {
+    createDesktopShortcut();
+});
 
 // 🔹 Configuração de Firewall
 function configurarFirewall() {

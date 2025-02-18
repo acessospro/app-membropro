@@ -14,12 +14,11 @@ export default {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: "app-membropro",
+        name: "MembroPro",
         authors: "Acessos Pro",
-        exe: "app-membropro.exe",
+        exe: "MembroPro.exe",
         setupExe: "MembroProInstaller.exe",
         setupIcon: path.resolve(__dirname, "src/assets/icon.ico"),
-        iconUrl: "https://membro.pro/application/default/views/publicic/imagens/icon.ico",
         loadingGif: path.resolve(__dirname, "src/assets/loader.gif"),
         shortcutName: "MembroPro",
         createDesktopShortcut: true,
