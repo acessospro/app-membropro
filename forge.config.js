@@ -19,7 +19,7 @@ export default {
         exe: "app-membropro.exe",
         setupExe: "MembroProInstaller.exe",
         setupIcon: path.resolve(__dirname, "src/assets/icon.ico"),
-        iconUrl: "https://membro.pro/assets/icon.ico",
+        iconUrl: "https://membro.pro/",
         loadingGif: path.resolve(__dirname, "src/assets/loader.gif"),
         shortcutName: "MembroPro",
         createDesktopShortcut: true,

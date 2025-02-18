@@ -2,7 +2,7 @@
   "name": "app-membropro",
   "version": "1.0.0",
   "description": "App de integração com Membro.Pro",
-  "main": "src/main.js",
+  "main": "src/index.js",
   "type": "module",
   "author": "Acessos Pro",
   "license": "MIT",
