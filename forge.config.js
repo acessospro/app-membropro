@@ -19,7 +19,7 @@ export default {
         exe: "app-membropro.exe",
         setupExe: "MembroProInstaller.exe",
         setupIcon: path.resolve(__dirname, "src/assets/icon.ico"),
-        iconUrl: "https://membro.pro/",
+        iconUrl: "https://membro.pro/application/default/views/publicic/imagens/icon.ico",
         loadingGif: path.resolve(__dirname, "src/assets/loader.gif"),
         shortcutName: "MembroPro",
         createDesktopShortcut: true,
@@ -59,8 +59,17 @@ export default {
           icon: path.resolve(__dirname, "src/assets/icon.png")
         }
       }
+    },
+  {
+    name: '@electron-forge/maker-appimage',
+    config: {
+      options: {
+        arch: "x64",
+        icon: path.resolve(__dirname, "src/assets/icon.png")
+      }
     }
-  ],
+  }
+],  
   publishers: [
     {
       name: "@electron-forge/publisher-github",
