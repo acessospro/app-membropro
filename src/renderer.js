@@ -3,12 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const profileId = button.getAttribute('data-profile-id');
             if (!profileId) {
-                console.error('[ERRO] Nenhum ID de perfil encontrado no botão.');
+                atualizarStatus('Erro: Nenhum ID de perfil encontrado.', 'erro');
                 return;
             }
 
-            console.log(`[INFO] Enviando ID do perfil para Electron: ${profileId}`);
+            atualizarStatus('Acessando ferramenta...', 'info');
             window.electronAPI.startProfile(profileId);
         });
     });
 });
+
+function atualizarStatus(mensagem, tipo) {
+    const statusContainer = document.getElementById('status-mensagens');
+    const statusElement = document.createElement('p');
+    statusElement.textContent = mensagem;
+    statusElement.classList.add(tipo);
+    statusContainer.appendChild(statusElement);
+}
